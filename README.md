@@ -3,7 +3,7 @@
 To build and run the project:
 
 ```
-git clone https://github.com/alejandro-du/vaadin-ai-chat.git
+git clone git@github.com:BrentonPoke/chatbot.git
 cd vaadin-ai-chat
 mvn package
 java -jar target/vaadin-chat-1.0-SNAPSHOT.jar
