@@ -1,5 +1,8 @@
 package com.example.chat;
 
+import com.toornament.ToornamentClient;
+import com.toornament.model.enums.Scope;
+import java.util.HashSet;
 import org.goldrenard.jb.configuration.BotConfiguration;
 import org.goldrenard.jb.core.Bot;
 import org.springframework.boot.SpringApplication;
@@ -27,6 +30,16 @@ public class Application extends SpringBootServletInitializer {
                 .path("src/main/resources")
                 .build()
         );
+    }
+    
+    @Bean
+    public ToornamentClient client() {
+        HashSet<Scope> scopes = new HashSet<>();
+        scopes.add(Scope.ORGANIZER_VIEW);
+        
+        return new ToornamentClient("yEF4GKOHO6MDYWh4q_6u0mHO5KfEVu1gAN20Dr76GtI",
+            "58ff4401140ba08e7f8b4567269ltppwn480ggw08gc4ggkcccwsgsog4cssc80c8swgkwg0so",
+            "nyfrwu8nsfko8cwckgwco840csc0k4wcog0gw84gwo440gggg",scopes);
     }
 
     @Bean
