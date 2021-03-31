@@ -33,7 +33,6 @@ public class ChatView extends VerticalLayout {
 	
 	private final UI ui;
 	private final MessageList messageList = new MessageList();
-	private final EsportsCard esportsCard = new EsportsCard();
 	private final TextField message = new TextField();
 	private final Chat chatSession;
 	private final ScheduledExecutorService executorService;

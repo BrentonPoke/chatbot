@@ -9,7 +9,7 @@ You can search among these games: Valorant, Overwatch, League of Legends and For
 
 <category><pattern>WHAT * TOURNAMENTS ARE THERE</pattern>
 <template>
-Here are some tournaments for <star/>
+Here are some tournaments for <star/>:
 </template>
 </category>
 </aiml>
