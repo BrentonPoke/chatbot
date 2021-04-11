@@ -1,10 +1,12 @@
 package com.example.chat;
 
+import ch.qos.logback.classic.Logger;
 import com.toornament.ToornamentClient;
 import com.toornament.model.enums.Scope;
 import java.util.HashSet;
 import org.goldrenard.jb.configuration.BotConfiguration;
 import org.goldrenard.jb.core.Bot;
+import org.slf4j.LoggerFactory;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
@@ -30,6 +32,10 @@ public class Application extends SpringBootServletInitializer {
                 .path("src/main/resources")
                 .build()
         );
+    }
+    @Bean
+    public Logger logger(){
+        return  (Logger) LoggerFactory.getLogger(this.getClass());
     }
     
     @Bean

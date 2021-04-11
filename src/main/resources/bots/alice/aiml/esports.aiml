@@ -12,4 +12,16 @@ You can search among these games: Valorant, Overwatch, League of Legends and For
 Here are some tournaments for <star/>:
 </template>
 </category>
+
+<category><pattern>SHOW ME * TOURNAMENTS</pattern>
+<template>
+Here are some tournaments for <star/>:
+</template>
+</category>
+
+<category><pattern>SHOW MATCHES FOR * </pattern>
+<template>
+Here are the matches for <star/>:
+</template>
+</category>
 </aiml>
