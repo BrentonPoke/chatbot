@@ -5,15 +5,18 @@ import com.toornament.ToornamentClient;
 import com.toornament.concepts.Matches;
 import com.toornament.model.Discipline;
 import com.toornament.model.MatchDetails;
+import com.toornament.model.Opponent;
 import com.toornament.model.Tournament;
 import com.toornament.model.TournamentDetails;
 import com.toornament.model.enums.MatchStatus;
+import com.toornament.model.enums.MatchType;
 import com.toornament.model.enums.Result;
 import com.toornament.model.enums.ScheduledSort;
 import com.toornament.model.request.MatchQuery;
 import com.toornament.model.request.TournamentQuery;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -79,6 +82,8 @@ public class EsportsMatches {
 		
 		List<MatchDetails> matchlist = matches.getMatches(MatchQuery.builder().status(MatchStatus.COMPLETED).build(),"matches=0-9");
 		buffer.append("Opponents: ");
+		
+		if(matchlist.get(0).getType().equals(MatchType.DUEL))
 		matchlist.stream().forEach(match -> {
 			buffer.append(match.getOpponents().get(0).getParticipant().getName());
 			buffer.append(" vs ");
@@ -93,6 +98,17 @@ public class EsportsMatches {
 			buffer.append(" WIN ");
 				}
 		);
+		
+		if(matchlist.get(0).getType().equals(MatchType.FFA)) {
+			matchlist.get(0).getOpponents().stream()
+					.sorted(Comparator.comparing(Opponent::getRank)).forEach(opponent -> {
+				buffer.append(opponent.getParticipant().getName());
+				buffer.append(": Rank ");
+				buffer.append(opponent.getRank());
+				buffer.append(" ");
+			});
+		}
+		
 		return buffer.toString();
 	}
 	

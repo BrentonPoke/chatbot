@@ -142,7 +142,7 @@ public class MessageList extends Div {
 		String search = ans.substring(24);
 		Logger logger = (Logger) LoggerFactory.getLogger("question");
 		logger.debug(ans);
-		if (!ans.contains("Here are some tournaments for")) {
+		if (ans.contains("Here are the matches for")) {
 			logger.debug("group 1: {}",search.trim());
 			qAnswer = getMatches(search.trim().substring(0,search.trim().length()-1), ans);
 			
