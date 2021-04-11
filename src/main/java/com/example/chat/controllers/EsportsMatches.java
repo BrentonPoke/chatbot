@@ -1,6 +1,6 @@
 package com.example.chat.controllers;
 
-import ch.qos.logback.classic.Logger;
+
 import com.toornament.ToornamentClient;
 import com.toornament.concepts.Matches;
 import com.toornament.model.Discipline;
@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;

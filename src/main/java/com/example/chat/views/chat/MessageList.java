@@ -1,6 +1,5 @@
 package com.example.chat.views.chat;
 
-import ch.qos.logback.classic.Logger;
 import com.github.appreciated.card.Card;
 import com.github.appreciated.card.content.IconItem;
 import com.toornament.ToornamentClient;
@@ -36,20 +35,21 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Request.Builder;
 import org.apache.http.client.HttpClient;
+import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 import org.vaadin.artur.Avataaar;
-
+@Service
 public class MessageList extends Div {
-	Logger logger = (Logger) LoggerFactory.getLogger(this.getClass());
+	
+	Logger logger;
 	ToornamentClient client;
 	String currentDiscipline;
-	final String regex = "(\\w+ \\w+)";
-	final Pattern pattern = Pattern.compile(regex, Pattern.CASE_INSENSITIVE);
 	
-	public MessageList() {
-		
+	@Autowired
+	public MessageList(Logger logger) {
+		this.logger = logger;
 		HashSet<Scope> scopes = new HashSet<>();
 		scopes.add(Scope.ORGANIZER_VIEW);
 		
@@ -140,7 +140,6 @@ public class MessageList extends Div {
 			
 		}
 		String search = ans.substring(24);
-		Logger logger = (Logger) LoggerFactory.getLogger("question");
 		logger.debug(ans);
 		if (ans.contains("Here are the matches for")) {
 			logger.debug("group 1: {}",search.trim());

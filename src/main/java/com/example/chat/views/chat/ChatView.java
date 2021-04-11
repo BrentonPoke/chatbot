@@ -1,5 +1,6 @@
 package com.example.chat.views.chat;
 
+import ch.qos.logback.classic.Logger;
 import com.example.chat.views.main.MainView;
 import com.vaadin.flow.component.Key;
 import com.vaadin.flow.component.UI;
@@ -15,6 +16,7 @@ import com.vaadin.flow.router.RouteAlias;
 import com.vaadin.flow.spring.scopes.VaadinUIScope;
 import org.goldrenard.jb.core.Bot;
 import org.goldrenard.jb.core.Chat;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 import org.vaadin.artur.Avataaar;
@@ -30,12 +32,14 @@ import java.util.concurrent.TimeUnit;
 public class ChatView extends VerticalLayout {
 	
 	private final UI ui;
-	private final MessageList messageList = new MessageList();
+	private MessageList messageList;
 	private final TextField message = new TextField();
 	private final Chat chatSession;
 	private final ScheduledExecutorService executorService;
 	
-	public ChatView(Bot alice, ScheduledExecutorService executorService) {
+	@Autowired
+	public ChatView(Bot alice, ScheduledExecutorService executorService, MessageList messageList) {
+		this.messageList = messageList;
 		this.executorService = executorService;
 		ui = UI.getCurrent();
 		chatSession = new Chat(alice);

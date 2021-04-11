@@ -14,6 +14,7 @@ import org.springframework.context.annotation.Bean;
 
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
+import org.springframework.context.annotation.ComponentScan;
 
 /**
  * The entry point of the Spring Boot application.
@@ -35,7 +36,7 @@ public class Application extends SpringBootServletInitializer {
     }
     @Bean
     public Logger logger(){
-        return  (Logger) LoggerFactory.getLogger(this.getClass());
+        return  (Logger) LoggerFactory.getLogger("API");
     }
     
     @Bean
