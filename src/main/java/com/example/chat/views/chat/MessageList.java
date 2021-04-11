@@ -3,40 +3,20 @@ package com.example.chat.views.chat;
 import com.github.appreciated.card.Card;
 import com.github.appreciated.card.content.IconItem;
 import com.toornament.ToornamentClient;
-import com.toornament.concepts.Matches;
-import com.toornament.model.Discipline;
-import com.toornament.model.Match;
-import com.toornament.model.MatchDetails;
 import com.toornament.model.Tournament;
-import com.toornament.model.TournamentDetails;
-import com.toornament.model.enums.ScheduledSort;
 import com.toornament.model.enums.Scope;
-import com.toornament.model.enums.TournamentStatus;
-import com.toornament.model.request.MatchQuery;
 import com.toornament.model.request.TournamentQuery;
 import com.vaadin.flow.component.Text;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.Image;
 import com.vaadin.flow.component.html.Span;
 import java.io.IOException;
-import java.net.URL;
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.HashMap;
+
 import java.util.HashSet;
-import java.util.List;
 import java.util.Locale;
-import java.util.function.Predicate;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
-import okhttp3.Request.Builder;
-import org.apache.http.client.HttpClient;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.vaadin.artur.Avataaar;
@@ -125,10 +105,6 @@ public class MessageList extends Div {
 				qAnswer = getFeaturedTournaments("overwatch");
 				this.currentDiscipline = "overwatch";
 			}
-			if (ans.toLowerCase(Locale.ROOT).contains("valorant")) {
-				qAnswer = getFeaturedTournaments("valorant");
-				this.currentDiscipline = "valorant";
-			}
 			if (ans.toLowerCase(Locale.ROOT).contains("league of legends") || ans.contains("LoL")) {
 				qAnswer = getFeaturedTournaments("leagueoflegends");
 				this.currentDiscipline = "leagueoflegends";
@@ -143,17 +119,17 @@ public class MessageList extends Div {
 		logger.debug(ans);
 		if (ans.contains("Here are the matches for")) {
 			logger.debug("group 1: {}",search.trim());
-			qAnswer = getMatches(search.trim().substring(0,search.trim().length()-1), ans);
+			qAnswer = getMatches(search.trim().substring(0,search.trim().length()-1));
 			
 		}
 		
 		return qAnswer;
 	}
 	
-	private String getMatches(String group, String ans) {
+	private String getMatches(String group) {
 		OkHttpClient client = new OkHttpClient();
 		Request.Builder builder = new Request.Builder().url("http://localhost:8080/matches/list/".concat(currentDiscipline).concat("/").concat(group));
-		
+		String ans;
 		try {
 			ans = client.newCall(builder.build()).execute().body().string();
 		} catch (IOException e) {
@@ -164,27 +140,16 @@ public class MessageList extends Div {
 	}
 	
 	private String getFeaturedTournaments(String game) {
-		StringBuffer buffer = new StringBuffer();
-		TournamentQuery.TournamentQueryBuilder query = TournamentQuery.builder();
-		//gets up to ten featured tournaments
-		query.discipline(game)
-				.scheduledBefore(
-						LocalDate.of(LocalDate.now().getYear(), LocalDate.now().getMonthValue(),
-								LocalDate.now().getMonth().length(false)));
-		
-		HashMap<String, String> map = new HashMap<>(1);
-		map.put("range", "tournaments=0-9");
-		
-		List<Tournament> tournaments = client.tournaments()
-				.getFeaturedTournaments(query.build(), map);
-		
-		if (tournaments.isEmpty()) {
-			return "No featured tournaments found";
+		OkHttpClient client = new OkHttpClient();
+		Request.Builder builder = new Request.Builder().url("http://localhost:8080/matches/tournaments/".concat(game));
+		String ans;
+		try {
+			ans = client.newCall(builder.build()).execute().body().string();
+		} catch (IOException e) {
+			ans = "something went wrong with the call";
+			logger.error(e.getMessage());
 		}
-		
-		tournaments.stream().forEach(a -> buffer.append(a.getName()).append(", "));
-		buffer.replace(buffer.length() - 2, buffer.length(), ".");
-		return buffer.toString();
+		return ans;
 		
 	}
 	
