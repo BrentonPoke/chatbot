@@ -11,13 +11,14 @@ import com.toornament.model.TournamentDetails;
 import com.toornament.model.enums.MatchStatus;
 import com.toornament.model.enums.MatchType;
 import com.toornament.model.enums.Result;
-import com.toornament.model.enums.ScheduledSort;
+import com.toornament.model.header.DisciplinesHeader;
+import com.toornament.model.header.MatchesHeader;
+import com.toornament.model.header.TournamentsHeader;
 import com.toornament.model.request.MatchQuery;
 import com.toornament.model.request.TournamentQuery;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.stream.Collectors;
@@ -43,8 +44,9 @@ public class EsportsMatches {
 	
 	@GetMapping("/games")
 	public String games() {
+		DisciplinesHeader header = new DisciplinesHeader().build(0,9);
 		List<Discipline> disciplines = new ArrayList<>(
-				this.client.disciplines().getDisciplines("disciplines=0-9"));
+				this.client.disciplines().getDisciplines(header));
 		StringBuffer discList = new StringBuffer();
 		disciplines.forEach(a ->
 				discList.append(a.getName() + ": " + a.getId()+" ")
@@ -62,10 +64,10 @@ public class EsportsMatches {
 				.name(search);
 		
 		logger.debug(query.toString());
-		HashMap<String, String> map = new HashMap<>(1);
-		map.put("range", "tournaments=0-9");
+		TournamentsHeader header = new TournamentsHeader().build(0,9);
+		
 		List<Tournament> tournaments;
-		tournaments = this.client.tournaments().getFeaturedTournaments(query.build(),map);
+		tournaments = this.client.tournaments().getFeaturedTournaments(query.build(),header);
 		
 		logger.debug(tournaments.toString());
 		
@@ -81,7 +83,7 @@ public class EsportsMatches {
 		details.setId(tournaments.get(0).getId());
 		Matches matches = client.matches(details);
 		
-		List<MatchDetails> matchlist = matches.getMatches(MatchQuery.builder().status(MatchStatus.COMPLETED).build(),"matches=0-9");
+		List<MatchDetails> matchlist = matches.getMatches(MatchQuery.builder().status(MatchStatus.COMPLETED).build(),new MatchesHeader().build(0,9));
 		buffer.append("Opponents: ");
 		
 		if(matchlist.get(0).getType().equals(MatchType.DUEL))
@@ -123,11 +125,10 @@ public class EsportsMatches {
 						LocalDate.of(LocalDate.now().getYear(), LocalDate.now().getMonthValue(),
 								LocalDate.now().getMonth().length(false)));
 		
-		HashMap<String, String> map = new HashMap<>(1);
-		map.put("range", "tournaments=0-9");
+		TournamentsHeader header = new TournamentsHeader().build(0,9);
 		
 		List<Tournament> tournaments = client.tournaments()
-				.getFeaturedTournaments(query.build(), map);
+				.getFeaturedTournaments(query.build(), header);
 		
 		if (tournaments.isEmpty()) {
 			return "No featured tournaments found";
