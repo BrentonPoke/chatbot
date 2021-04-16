@@ -19,7 +19,19 @@ Here are some tournaments for <star/>:
 </template>
 </category>
 
+<category><pattern>SHOW * TOURNAMENTS</pattern>
+<template>
+Here are some tournaments for <star/>:
+</template>
+</category>
+
 <category><pattern>SHOW MATCHES FOR * </pattern>
+<template>
+Here are the matches for <star/>:
+</template>
+</category>
+
+<category><pattern>SHOW * MATCHES</pattern>
 <template>
 Here are the matches for <star/>:
 </template>
