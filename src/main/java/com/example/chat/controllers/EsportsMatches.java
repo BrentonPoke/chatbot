@@ -36,6 +36,7 @@ public class EsportsMatches {
 	
 	ToornamentClient client;
 	Logger logger;
+	
 	@Autowired
 	public EsportsMatches(ToornamentClient toornamentClient, Logger logger) {
 		this.logger = logger;
@@ -44,19 +45,20 @@ public class EsportsMatches {
 	
 	@GetMapping("/games")
 	public String games() {
-		DisciplinesHeader header = new DisciplinesHeader().build(0,9);
+		DisciplinesHeader header = new DisciplinesHeader().build(0, 9);
 		List<Discipline> disciplines = new ArrayList<>(
 				this.client.disciplines().getDisciplines(header));
 		StringBuffer discList = new StringBuffer();
 		disciplines.forEach(a ->
-				discList.append(a.getName() + ": " + a.getId()+" ")
+				discList.append(a.getName() + ": " + a.getId() + " ")
 		);
 		
 		return discList.toString();
 	}
 	
 	@GetMapping("/list/{discipline}/{search}")
-	public String getMatches(@PathVariable("discipline")String discipline, @PathVariable("search") String search){
+	public String getMatches(@PathVariable("discipline") String discipline,
+			@PathVariable("search") String search) {
 		StringBuffer buffer = new StringBuffer();
 		TournamentQuery.TournamentQueryBuilder query = TournamentQuery.builder();
 		
@@ -64,15 +66,16 @@ public class EsportsMatches {
 				.name(search);
 		
 		logger.debug(query.toString());
-		TournamentsHeader header = new TournamentsHeader().build(0,9);
+		TournamentsHeader header = new TournamentsHeader().build(0, 9);
 		
 		List<Tournament> tournaments;
-		tournaments = this.client.tournaments().getFeaturedTournaments(query.build(),header);
+		tournaments = this.client.tournaments().getFeaturedTournaments(query.build(), header);
 		
 		logger.debug(tournaments.toString());
 		
-		Stream<Tournament> stream = tournaments.stream().filter(t -> t.getName().toLowerCase(Locale.ROOT).contains(search.toLowerCase(
-				Locale.ROOT)));
+		Stream<Tournament> stream = tournaments.stream()
+				.filter(t -> t.getName().toLowerCase(Locale.ROOT).contains(search.toLowerCase(
+						Locale.ROOT)));
 		tournaments = stream.collect(Collectors.<Tournament>toList());
 		
 		logger.debug("After filter: {}", tournaments);
@@ -83,26 +86,31 @@ public class EsportsMatches {
 		details.setId(tournaments.get(0).getId());
 		Matches matches = client.matches(details);
 		
-		List<MatchDetails> matchlist = matches.getMatches(MatchQuery.builder().status(MatchStatus.COMPLETED).build(),new MatchesHeader().build(0,9));
+		List<MatchDetails> matchlist = matches
+				.getMatches(MatchQuery.builder().status(MatchStatus.COMPLETED).build(),
+						new MatchesHeader().build(0, 9));
 		buffer.append("Opponents: ");
 		
-		if(matchlist.get(0).getType().equals(MatchType.DUEL))
-		matchlist.stream().forEach(match -> {
-			buffer.append(match.getOpponents().get(0).getParticipant().getName());
-			buffer.append(" vs ");
-			buffer.append(match.getOpponents().get(1).getParticipant().getName());
-			buffer.append(": ");
-			if(match.getOpponents().get(0).getResult().equals(Result.WIN))
-			buffer.append(match.getOpponents().get(0).getParticipant().getName());
-			
-			if(match.getOpponents().get(1).getResult().equals(Result.WIN))
-				buffer.append(match.getOpponents().get(0).getParticipant().getName());
-			
-			buffer.append(" WIN ");
-				}
-		);
+		if (matchlist.get(0).getType().equals(MatchType.DUEL)) {
+			matchlist.stream().forEach(match -> {
+						buffer.append(match.getOpponents().get(0).getParticipant().getName());
+						buffer.append(" vs ");
+						buffer.append(match.getOpponents().get(1).getParticipant().getName());
+						buffer.append(": ");
+						if (match.getOpponents().get(0).getResult().equals(Result.WIN)) {
+							buffer.append(match.getOpponents().get(0).getParticipant().getName());
+						}
+						
+						if (match.getOpponents().get(1).getResult().equals(Result.WIN)) {
+							buffer.append(match.getOpponents().get(0).getParticipant().getName());
+						}
+						
+						buffer.append(" WIN ");
+					}
+			);
+		}
 		
-		if(matchlist.get(0).getType().equals(MatchType.FFA)) {
+		if (matchlist.get(0).getType().equals(MatchType.FFA)) {
 			matchlist.get(0).getOpponents().stream()
 					.sorted(Comparator.comparing(Opponent::getRank)).forEach(opponent -> {
 				buffer.append(opponent.getParticipant().getName());
@@ -116,7 +124,7 @@ public class EsportsMatches {
 	}
 	
 	@GetMapping("/tournaments/{game}")
-	public String tournaments(@PathVariable("game") String game){
+	public String tournaments(@PathVariable("game") String game) {
 		StringBuffer buffer = new StringBuffer();
 		TournamentQuery.TournamentQueryBuilder query = TournamentQuery.builder();
 		//gets up to ten featured tournaments
@@ -125,7 +133,7 @@ public class EsportsMatches {
 						LocalDate.of(LocalDate.now().getYear(), LocalDate.now().getMonthValue(),
 								LocalDate.now().getMonth().length(false)));
 		
-		TournamentsHeader header = new TournamentsHeader().build(0,9);
+		TournamentsHeader header = new TournamentsHeader().build(0, 9);
 		
 		List<Tournament> tournaments = client.tournaments()
 				.getFeaturedTournaments(query.build(), header);

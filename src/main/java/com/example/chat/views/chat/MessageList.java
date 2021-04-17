@@ -20,6 +20,7 @@ import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.vaadin.artur.Avataaar;
+
 @Service
 public class MessageList extends Div {
 	
@@ -118,8 +119,8 @@ public class MessageList extends Div {
 		String search = ans.substring(24);
 		logger.debug(ans);
 		if (ans.contains("Here are the matches for")) {
-			logger.debug("group 1: {}",search.trim());
-			qAnswer = getMatches(search.trim().substring(0,search.trim().length()-1));
+			logger.debug("group 1: {}", search.trim());
+			qAnswer = getMatches(search.trim().substring(0, search.trim().length() - 1));
 			
 		}
 		
@@ -128,7 +129,11 @@ public class MessageList extends Div {
 	
 	private String getMatches(String group) {
 		OkHttpClient client = new OkHttpClient();
-		Request.Builder builder = new Request.Builder().url("http://localhost:8080/matches/list/".concat(currentDiscipline).concat("/").concat(group));
+		Request.Builder builder = new Request.Builder().url(
+				"http://localhost:8080/matches/list/"
+						.concat(currentDiscipline)
+						.concat("/")
+						.concat(group));
 		String ans;
 		try {
 			ans = client.newCall(builder.build()).execute().body().string();
@@ -141,7 +146,8 @@ public class MessageList extends Div {
 	
 	private String getFeaturedTournaments(String game) {
 		OkHttpClient client = new OkHttpClient();
-		Request.Builder builder = new Request.Builder().url("http://localhost:8080/matches/tournaments/".concat(game));
+		Request.Builder builder = new Request.Builder()
+				.url("http://localhost:8080/matches/tournaments/".concat(game));
 		String ans;
 		try {
 			ans = client.newCall(builder.build()).execute().body().string();
